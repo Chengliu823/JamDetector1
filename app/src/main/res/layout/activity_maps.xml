@@ -1,0 +1,59 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:map="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.semesterprojekt.MapsActivity" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:text="User Status"
+            android:gravity="center"/>
+
+        <TextView
+            android:id="@+id/user_status"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:text="REST"
+            android:gravity="center"
+            android:textColor="#FF0000"/>
+
+    </LinearLayout>
+
+    <fragment
+        android:id="@+id/map"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="400dp"/>
+
+
+    <TextView
+        android:id="@+id/user_location"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:text="User Location"
+        android:gravity="center"
+        android:textColor="#000"/>
+
+
+    <Button
+        android:id="@+id/bt_track_data"
+        android:layout_margin="10dp"
+        android:layout_gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:text="Track Data"/>
+
+
+
+
+</LinearLayout>
