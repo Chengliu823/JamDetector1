@@ -39,13 +39,13 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         //绑定控件
-        mEtAccount = findViewById(R.id.et_user_account);            //绑定用户名输入控件
-        mEtPassword = findViewById(R.id.et_user_password);           //绑定密码输入控件
-        mIvDeleteAccount = findViewById(R.id.iv_delete_account);     //绑定用户名删除视图
-        mIvDeletePassword = findViewById(R.id.iv_delete_password);    //绑定密码删除视图
-        mBtnLogin = findViewById(R.id.btn_login);               //绑定登录按钮
-        mTvForgetPassword = findViewById(R.id.tv_forget_password);     //绑定忘记密码链接
-        mTvGoToRegister = findViewById(R.id.tv_go_to_register);       //绑定注册链接
+        mEtAccount = findViewById(R.id.et_user_account);
+        mEtPassword = findViewById(R.id.et_user_password);
+        mIvDeleteAccount = findViewById(R.id.iv_delete_account);
+        mIvDeletePassword = findViewById(R.id.iv_delete_password);
+        mBtnLogin = findViewById(R.id.btn_login);
+        mTvForgetPassword = findViewById(R.id.tv_forget_password);
+        mTvGoToRegister = findViewById(R.id.tv_go_to_register);
 
         //文字发生改变时的监听事件
         mEtAccount.addTextChangedListener(new TextWatcher() {
