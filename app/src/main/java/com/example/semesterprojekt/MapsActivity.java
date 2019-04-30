@@ -102,7 +102,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         // Do other setup activities here too, as described elsewhere in this tutorial.
 
-        // Turn on the My Location layer and the related control on the map.
+        mMap.moveCamera(CameraUpdateFactory.zoomTo( 18f));
+
+        // Turn on the My Location layer and the related control on the map
         updateLocationUI();
     }
 
@@ -117,7 +119,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
         last_point = new LatLng(location.getLatitude(), location.getLongitude());
         mMap.addMarker(new MarkerOptions().position(last_point));
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(last_point, 18f));
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(last_point));
         user_location.setText("Longitude:"+location.getLongitude()+", latitude:"+location.getLatitude());
 
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000, 10, new LocationListener() {
