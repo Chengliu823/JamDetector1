@@ -52,6 +52,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         //für GPS tracking, aktiviert GPS
         locationManager = (LocationManager) this.getSystemService(LOCATION_SERVICE);
+
+        /*
         // 通过GPS获取定位的位置数据
         Criteria criteria = new Criteria();
         criteria.setAccuracy(Criteria.ACCURACY_FINE);// 高精度 //für Präzision (hoche genauigkeit)
@@ -60,6 +62,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         criteria.setCostAllowed(true);// 设置允许产生资费 //maut/kosten
         criteria.setSpeedRequired(true);//设置是否需要速度 //geschwindigkeit erkennung
         criteria.setPowerRequirement(Criteria.POWER_HIGH);// 低功耗 //energie verbrauch
+        */
 
         Intent intent = getIntent(); //überspringe zu anderem Fenster
         username = intent.getStringExtra("username"); //username
@@ -106,7 +109,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @SuppressLint("MissingPermission")
     private void updateLocationUI() {
 
-
+        //zur sichert, damit keine Null Pointer exception
         if (mMap == null) {
             return;
         }

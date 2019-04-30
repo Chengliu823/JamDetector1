@@ -150,7 +150,7 @@ public class LoginActivity extends AppCompatActivity {
         progressDialog.show();
 
 
-        //检查数据库用户信息 //überprüfung ob password oder userame falscj, wenn richtig dann zu mapsActivity
+        //检查数据库用户信息 //überprüfung ob password oder userame falsch, wenn richtig dann zu mapsActivity
         if (new SQLiteHelper(getApplicationContext()).login(mEtAccount.getText().toString(), mEtPassword.getText().toString())){
             Toast.makeText(this, "success!", Toast.LENGTH_SHORT).show();
             //启动主界面
