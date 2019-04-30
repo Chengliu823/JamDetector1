@@ -1,9 +1,141 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".RegisterActivity">
 
-</android.support.constraint.ConstraintLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/content_padding"
+        android:layout_marginTop="@dimen/content_padding"
+        android:layout_marginRight="@dimen/content_padding"
+        android:background="@drawable/btn_radius_all_normal"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/cell_normal"
+            android:layout_marginLeft="1.0dip"
+            android:layout_marginTop="1.0dip"
+            android:layout_marginRight="1.0dip"
+            android:background="@drawable/btn_radius_top_normal"
+            android:orientation="horizontal"
+            android:paddingRight="5.0dip">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/content_margin"
+                android:layout_marginTop="@dimen/content_padding"
+                android:layout_marginRight="@dimen/content_margin"
+                android:layout_marginBottom="@dimen/content_padding"
+                android:scaleType="fitCenter"
+                android:src="@drawable/login_name" />
+
+            <EditText
+                android:id="@+id/et_user_account"
+                style="@style/Widget.GPSTrack.EditText"
+                android:layout_width="0.0dip"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1.0"
+                android:background="@null"
+                android:hint="please enter the username"
+                android:maxLength="50" />
+
+            <ImageView
+                android:id="@+id/iv_delete_account"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="center_vertical"
+                android:paddingLeft="10.0dip"
+                android:paddingTop="8.0dip"
+                android:paddingRight="10.0dip"
+                android:paddingBottom="8.0dip"
+                android:scaleType="centerCrop"
+                android:src="@drawable/btn_edit_delete"
+                android:visibility="gone" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/stroke"
+            android:background="@color/divider" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/cell_normal"
+            android:layout_marginLeft="1.0dip"
+            android:layout_marginRight="1.0dip"
+            android:layout_marginBottom="1.0dip"
+            android:background="@drawable/btn_radius_bottom_normal"
+            android:orientation="horizontal"
+            android:paddingRight="5.0dip">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/content_margin"
+                android:layout_marginTop="@dimen/content_padding"
+                android:layout_marginRight="@dimen/content_margin"
+                android:layout_marginBottom="@dimen/content_padding"
+                android:scaleType="fitCenter"
+                android:src="@drawable/login_password" />
+
+            <EditText
+                android:id="@+id/et_user_password"
+                style="@style/Widget.GPSTrack.EditText"
+                android:layout_width="0.0dip"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1.0"
+                android:background="@null"
+                android:hint="please enter the password"
+                android:inputType="textPassword"
+                android:maxLength="20" />
+
+            <ImageView
+                android:id="@+id/iv_delete_password"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="center_vertical"
+                android:paddingLeft="10.0dip"
+                android:paddingTop="8.0dip"
+                android:paddingRight="10.0dip"
+                android:paddingBottom="8.0dip"
+                android:scaleType="centerCrop"
+                android:src="@drawable/btn_edit_delete"
+                android:visibility="gone" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <android.support.v7.widget.AppCompatButton
+        android:id="@+id/btn_sign_up"
+        style="@style/Widget.GPSTrack.Button"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/cell_normal"
+        android:layout_margin="@dimen/content_padding"
+        android:text="Sign up" />
+
+    <LinearLayout
+        android:id="@+id/layout_other"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:layout_marginTop="20.0dp"
+        android:orientation="horizontal"
+        android:padding="@dimen/content_padding">
+
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+    </LinearLayout>
+
+
+</LinearLayout>
