@@ -6,7 +6,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.widget.Toast;
 
 
-
+//datenbank, daten werden hier gespeichert
 public class MySQLiteOpenHelper extends SQLiteOpenHelper {
 
     private static final String CREATE_USER = "create table User(" +

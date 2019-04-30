@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 
 
-
+//wie die datenbank funktioniert
 public class SQLiteHelper {
 
     private MySQLiteOpenHelper dbHelper;

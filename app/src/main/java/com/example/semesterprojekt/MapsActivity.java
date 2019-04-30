@@ -45,32 +45,34 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private TextView user_status, user_location;
     private String username;
 
-    @Override //hallo noah
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
 
+        //für GPS tracking, aktiviert GPS
         locationManager = (LocationManager) this.getSystemService(LOCATION_SERVICE);
         // 通过GPS获取定位的位置数据
         Criteria criteria = new Criteria();
-        criteria.setAccuracy(Criteria.ACCURACY_FINE);// 高精度
-        criteria.setAltitudeRequired(false);// 设置不需要获取海拔方向数据
-        criteria.setBearingRequired(false);// 设置不需要获取方位数据
-        criteria.setCostAllowed(true);// 设置允许产生资费
-        criteria.setSpeedRequired(true);//设置是否需要速度
-        criteria.setPowerRequirement(Criteria.POWER_HIGH);// 低功耗
+        criteria.setAccuracy(Criteria.ACCURACY_FINE);// 高精度 //für Präzision (hoche genauigkeit)
+        criteria.setAltitudeRequired(false);// 设置不需要获取海拔方向数据 //höhe
+        criteria.setBearingRequired(false);// 设置不需要获取方位数据/ /richtung
+        criteria.setCostAllowed(true);// 设置允许产生资费 //maut/kosten
+        criteria.setSpeedRequired(true);//设置是否需要速度 //geschwindigkeit erkennung
+        criteria.setPowerRequirement(Criteria.POWER_HIGH);// 低功耗 //energie verbrauch
 
-        Intent intent = getIntent();
-        username = intent.getStringExtra("username");
+        Intent intent = getIntent(); //überspringe zu anderem Fenster
+        username = intent.getStringExtra("username"); //username
 
-        user_status = findViewById(R.id.user_status);
-        user_location = findViewById(R.id.user_location);
+        user_status = findViewById(R.id.user_status); //status von user
+        user_location = findViewById(R.id.user_location); //position der users
 
+        //überpfüfung
         findViewById(R.id.bt_track_data).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent1 = new Intent(MapsActivity.this, TrackInfoActivity.class);
-                intent1.putExtra("username", username);
+                Intent intent1 = new Intent(MapsActivity.this, TrackInfoActivity.class); //wenn geklickt: zum trafic info fenster
+                intent1.putExtra("username", username); //username in datenbank gespeichert
                 startActivity(intent1);
             }
         });
@@ -117,14 +119,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000, 10, new LocationListener() {
             @Override
+            //für verkehr
             public void onLocationChanged(Location location) {
                 user_location.setText("Longitude:"+location.getLongitude()+", latitude:"+location.getLatitude());
                 mMap.addPolyline(new PolylineOptions().clickable(false).color(Color.RED).add(last_point, new LatLng(location.getLatitude(), location.getLongitude())));
                 last_point = new LatLng(location.getLatitude(), location.getLongitude());
-                float  speed=location.getSpeed();//取得速度
+                float speed=location.getSpeed();//取得速度
                 DecimalFormat decimalFormat=new DecimalFormat("0.00");//构造方法的字符格式这里如果小数不足2位,会以0补足.
-                String p=decimalFormat.format(speed*3.6);//format 返回的是字符串
-                speed = Float.valueOf(p);
+                speed = speed * 3.6f;//format 返回的是字符串
                 if (speed == 0){
                     user_status.setText("REST");
                 }else{

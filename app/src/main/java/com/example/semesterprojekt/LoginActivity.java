@@ -27,6 +27,7 @@ import com.example.semesterprojekt.SQLiteHelper;
 
 public class LoginActivity extends AppCompatActivity {
 
+    //definition für layout
     private EditText mEtAccount, mEtPassword;
     private ImageView mIvDeleteAccount, mIvDeletePassword;
     private Button mBtnLogin;
@@ -38,7 +39,7 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        //绑定控件
+        //绑定控件 //input wird übernommen
         mEtAccount = findViewById(R.id.et_user_account);
         mEtPassword = findViewById(R.id.et_user_password);
         mIvDeleteAccount = findViewById(R.id.iv_delete_account);
@@ -83,7 +84,7 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-        //按钮监听
+        //按钮监听 //button
         mIvDeleteAccount.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -96,7 +97,7 @@ public class LoginActivity extends AppCompatActivity {
                 mEtPassword.setText("");
             }
         });
-        mBtnLogin.setOnClickListener(new View.OnClickListener() {
+        mBtnLogin.setOnClickListener(new View.OnClickListener() { //button für login
             @Override
             public void onClick(View view) {
                 login();
@@ -123,7 +124,7 @@ public class LoginActivity extends AppCompatActivity {
     /**
      * 执行登录操作
      */
-    private void login() {
+    private void login() { //login
         // 隐藏软键盘
         hideKeyBoard(this);
 
@@ -140,8 +141,8 @@ public class LoginActivity extends AppCompatActivity {
             return;
         }
         // 禁用登录按钮,避免重复点击
-        mBtnLogin.setEnabled(false);
-        // 显示提示对话框
+        mBtnLogin.setEnabled(false); //wenn man zu oft drückt
+        // 显示提示对话框 //kleine message
         progressDialog = new ProgressDialog(this);
         progressDialog.setTitle("waiting...");
         progressDialog.setMessage("sign in...");
@@ -149,7 +150,7 @@ public class LoginActivity extends AppCompatActivity {
         progressDialog.show();
 
 
-        //检查数据库用户信息
+        //检查数据库用户信息 //überprüfung ob password oder userame falscj, wenn richtig dann zu mapsActivity
         if (new SQLiteHelper(getApplicationContext()).login(mEtAccount.getText().toString(), mEtPassword.getText().toString())){
             Toast.makeText(this, "success!", Toast.LENGTH_SHORT).show();
             //启动主界面
@@ -170,13 +171,14 @@ public class LoginActivity extends AppCompatActivity {
      * <br>
      * <b>警告</b> 必须是确定键盘显示时才能调用
      */
+    //für tastatur
     public static void hideKeyBoard(Context context) {
         InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
         if (imm.isActive())
             imm.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, InputMethodManager.HIDE_NOT_ALWAYS);
     }
 
-    //检查APP是否具有拨号、存储权限
+    //检查APP是否具有拨号、存储权限 //überfrüfen
     private void checkPermission(){
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
             if(LoginActivity.this.checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -187,7 +189,7 @@ public class LoginActivity extends AppCompatActivity {
         //check_cookies();
     }
 
-    // 提示用户该请求权限的弹出框
+    // 提示用户该请求权限的弹出框 //für GPS
     private void showDialogTipUserRequestPermission() {
         new AlertDialog.Builder(this)
                 .setTitle("Permission is not Granted")
