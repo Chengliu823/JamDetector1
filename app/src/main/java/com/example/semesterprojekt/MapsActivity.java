@@ -117,7 +117,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
         last_point = new LatLng(location.getLatitude(), location.getLongitude());
         mMap.addMarker(new MarkerOptions().position(last_point));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(last_point));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(last_point, 18f));
         user_location.setText("Longitude:"+location.getLongitude()+", latitude:"+location.getLatitude());
 
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000, 10, new LocationListener() {
