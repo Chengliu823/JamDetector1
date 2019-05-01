@@ -6,4 +6,36 @@
     android:layout_height="match_parent"
     tools:context=".Setting">
 
+
+    <TextView
+        android:id="@+id/tv_go_to_aboutus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/about_uns"
+        android:textColor="@color/secondary_text"
+        android:textSize="16.0sp"
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="16dp" />
+
+    <TextView
+        android:id="@+id/tv_go_to_help"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/help"
+        android:textColor="@color/secondary_text"
+        android:textSize="16.0sp"
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="49dp" />
+
+    <TextView
+        android:id="@+id/tv_go_to_faq"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/faq"
+        android:textColor="@color/secondary_text"
+        android:textSize="16.0sp"
+        tools:layout_editor_absoluteX="2dp"
+        tools:layout_editor_absoluteY="87dp" />
+
+
 </android.support.constraint.ConstraintLayout>
