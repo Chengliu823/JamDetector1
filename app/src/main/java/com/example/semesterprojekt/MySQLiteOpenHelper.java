@@ -36,6 +36,7 @@ public class MySQLiteOpenHelper extends SQLiteOpenHelper {
 
     private void initial_data(SQLiteDatabase db){
         db.execSQL("insert into User(username, password) VALUES ('cheng', '123');");
+        db.execSQL("insert into User(username, password) VALUES ('sammi', '1');");
     }
 
     @Override
