@@ -7,6 +7,12 @@
     android:orientation="vertical"
     tools:context=".LoginActivity">
 
+    <ImageButton
+        android:id="@+id/imageButton"
+        android:layout_width="wrap_content"
+        android:layout_height="44dp"
+        app:srcCompat="@android:drawable/ic_menu_info_details" />
+
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="126dp"
