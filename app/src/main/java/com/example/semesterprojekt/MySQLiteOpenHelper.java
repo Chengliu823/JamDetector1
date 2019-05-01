@@ -41,6 +41,7 @@ public class MySQLiteOpenHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion){
+        db.execSQL("insert into Track(username,lat,lon,time) VALUES ('cheng','48.2177','16.3380','01.05.2019')");
     }
 
 }
