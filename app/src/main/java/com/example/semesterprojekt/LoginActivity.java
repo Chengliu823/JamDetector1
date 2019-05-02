@@ -24,16 +24,15 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.semesterprojekt.SQLiteHelper;
-
 public class LoginActivity extends AppCompatActivity {
 
-    //definition für layout
+    //definition für layout //instanz Variablen
     private EditText mEtAccount, mEtPassword;
     private ImageView mIvDeleteAccount, mIvDeletePassword;
     private Button mBtnLogin;
     private TextView mTvForgetPassword, mTvGoToRegister;
     private ProgressDialog progressDialog;
+    private ImageButton btnSetting;
 
 
     @Override
@@ -49,6 +48,7 @@ public class LoginActivity extends AppCompatActivity {
         mBtnLogin = findViewById(R.id.btn_login);
         mTvForgetPassword = findViewById(R.id.tv_forget_password);
         mTvGoToRegister = findViewById(R.id.tv_go_to_register);
+        btnSetting = findViewById(R.id.btn_setting);
 
         //文字发生改变时的监听事件
         mEtAccount.addTextChangedListener(new TextWatcher() {
@@ -111,6 +111,15 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View view) {
                 //进入注册界面
                 Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        btnSetting.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //进入注册界面
+                Intent intent = new Intent(LoginActivity.this, Setting.class);
                 startActivity(intent);
             }
         });
