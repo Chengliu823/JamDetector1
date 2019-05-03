@@ -119,7 +119,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 //进入注册界面
-                Intent intent = new Intent(LoginActivity.this, Setting.class);
+                Intent intent = new Intent(LoginActivity.this, SettingActivity.class);
                 startActivity(intent);
             }
         });

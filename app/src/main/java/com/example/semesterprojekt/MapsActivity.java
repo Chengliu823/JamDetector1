@@ -18,6 +18,7 @@ import android.os.Bundle;
 import android.text.Html;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.semesterprojekt.SQLiteHelper;
@@ -44,11 +45,23 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private LatLng last_point;
     private TextView user_status, user_location;
     private String username;
+    private Button btnCalendar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+
+        btnCalendar = findViewById(R.id.btn_calendar);
+
+        btnCalendar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //进入注册界面
+                Intent intent = new Intent(MapsActivity.this, CalendarActivity.class);
+                startActivity(intent);
+            }
+        });
 
         //für GPS tracking, aktiviert GPS
         locationManager = (LocationManager) this.getSystemService(LOCATION_SERVICE);

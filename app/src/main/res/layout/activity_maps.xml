@@ -1,10 +1,10 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:map="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.semesterprojekt.MapsActivity" >
+    android:orientation="vertical"
+    tools:context="com.example.semesterprojekt.MapsActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -13,19 +13,19 @@
 
         <TextView
             android:layout_width="0dp"
-            android:layout_weight="1"
             android:layout_height="match_parent"
-            android:text="User Status"
-            android:gravity="center"/>
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="User Status" />
 
         <TextView
             android:id="@+id/user_status"
             android:layout_width="0dp"
-            android:layout_weight="1"
             android:layout_height="match_parent"
-            android:text="REST"
+            android:layout_weight="1"
             android:gravity="center"
-            android:textColor="#FF0000"/>
+            android:text="REST"
+            android:textColor="#FF0000" />
 
     </LinearLayout>
 
@@ -33,27 +33,67 @@
         android:id="@+id/map"
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
-        android:layout_height="400dp"/>
+        android:layout_height="400dp" />
 
 
     <TextView
         android:id="@+id/user_location"
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:text="User Location"
         android:gravity="center"
-        android:textColor="#000"/>
+        android:text="User Location"
+        android:textColor="#000" />
 
 
-    <Button
-        android:id="@+id/bt_track_data"
-        android:layout_margin="10dp"
-        android:layout_gravity="center"
-        android:layout_width="wrap_content"
-        android:layout_height="40dp"
-        android:text="Track Data"/>
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
+            <Button
+                android:id="@+id/btn_calendar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Calendar" />
+
+            <Button
+                android:id="@+id/btn_add_jam"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Add Jam" />
+
+            <Button
+                android:id="@+id/btn_logout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Logout" />
+
+        </TableRow>
+
+        <TableRow
+            android:layout_width="149dp"
+            android:layout_height="match_parent">
+
+            <Button
+                android:id="@+id/bt_track_data"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="10dp"
+                android:text="Track Data" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </TableLayout>
 
 
 </LinearLayout>
