@@ -6,6 +6,9 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.Point;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.location.Criteria;
 import android.location.Location;
@@ -43,9 +46,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private GoogleMap mMap;
     private LocationManager locationManager;
     private LatLng last_point;
-    private TextView user_status, user_location;
+    private TextView user_status, user_location, user_acc;
     private String username;
+    private SensorManager sensorManager;
+    private DecimalFormat decimalFormat;
     private Button btnCalendar;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,7 +63,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         btnCalendar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //进入注册界面
+                //进入清理界面
                 Intent intent = new Intent(MapsActivity.this, CalendarActivity.class);
                 startActivity(intent);
             }
@@ -78,10 +84,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         */
 
         Intent intent = getIntent(); //überspringe zu anderem Fenster
+        //获取用户信息
         username = intent.getStringExtra("username"); //username
 
         user_status = findViewById(R.id.user_status); //status von user
         user_location = findViewById(R.id.user_location); //position der users
+
+        user_acc = findViewById(R.id.user_cceleration);
+        sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+
+        decimalFormat=new DecimalFormat("0.00");//构造方法的字符格式这里如果小数不足2位,会以0补足.
 
         //überpfüfung
         findViewById(R.id.bt_track_data).setOnClickListener(new View.OnClickListener() {
@@ -94,9 +106,42 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         });
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
+        //获取SupportMapFragment并在准备好使用地图的时候获取通知
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+        Sensor accSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        if (accSensor!=null){
+            sensorManager.registerListener(new SensorEventListener() {
+                @Override
+                public void onSensorChanged(SensorEvent sensorEvent) {
+                    if (sensorEvent.sensor.getType() == Sensor.TYPE_ACCELEROMETER){
+                        double x = sensorEvent.values[0];
+                        double y = sensorEvent.values[1];
+                        double z = sensorEvent.values[2];
+                        user_acc.setText(decimalFormat.format(Math.sqrt(x*x+y*y+z*z)));
+                    }
+                }
+
+                @Override
+                public void onAccuracyChanged(Sensor sensor, int i) {
+
+                }
+            }, accSensor, SensorManager.SENSOR_DELAY_NORMAL);
+        }
+
+        findViewById(R.id.bt_locate).setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("MissingPermission")
+            @Override
+            public void onClick(View view) {
+                Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                mMap.addPolyline(new PolylineOptions().clickable(false).color(Color.RED).add(last_point, new LatLng(location.getLatitude(), location.getLongitude())));
+                last_point = new LatLng(location.getLatitude(), location.getLongitude());
+                updateUI(location);
+            }
+        });
+
     }
 
 
@@ -115,9 +160,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         // Do other setup activities here too, as described elsewhere in this tutorial.
 
-        mMap.moveCamera(CameraUpdateFactory.zoomTo( 18f));
-
-        // Turn on the My Location layer and the related control on the map
+        // Turn on the My Location layer and the related control on the map.
         updateLocationUI();
     }
 
@@ -128,8 +171,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         if (mMap == null) {
             return;
         }
-
+        //Geographische Länge, Breitegrad
         Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        updateUI(location);
         last_point = new LatLng(location.getLatitude(), location.getLongitude());
         mMap.addMarker(new MarkerOptions().position(last_point));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(last_point));
@@ -137,22 +181,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000, 10, new LocationListener() {
             @Override
-            //für verkehr
             public void onLocationChanged(Location location) {
-                user_location.setText("Longitude:"+location.getLongitude()+", latitude:"+location.getLatitude());
                 mMap.addPolyline(new PolylineOptions().clickable(false).color(Color.RED).add(last_point, new LatLng(location.getLatitude(), location.getLongitude())));
                 last_point = new LatLng(location.getLatitude(), location.getLongitude());
-                float speed=location.getSpeed();//取得速度
-                DecimalFormat decimalFormat=new DecimalFormat("0.00");//构造方法的字符格式这里如果小数不足2位,会以0补足.
-                speed = speed * 3.6f;//format 返回的是字符串
-                if (speed == 0){
-                    user_status.setText("REST");
-                }else{
-                    SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                    Date date = new Date();
-                    user_status.setText((speed/3.6)+"m/s");
-                    new SQLiteHelper(MapsActivity.this).add_track(username, location.getLatitude(), location.getLongitude(), format.format(date));
-                }
+                updateUI(location);
             }
 
             @Override
@@ -170,6 +202,22 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             }
         });
+    }
+
+    // update the location view and database data
+    private void updateUI(Location location){
+        user_location.setText("Longitude:"+location.getLongitude()+", latitude:"+location.getLatitude());
+        float  speed=location.getSpeed();//取得速度
+        String p=decimalFormat.format(speed*3.6);//format 返回的是字符串
+        speed = Float.valueOf(p);
+        if (speed == 0){
+            user_status.setText("REST");
+        }else{
+            user_status.setText((speed/3.6)+"m/s");
+        }
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date date = new Date();
+        new SQLiteHelper(MapsActivity.this).add_track(username, location.getLatitude(), location.getLongitude(), format.format(date));
     }
 
 }
