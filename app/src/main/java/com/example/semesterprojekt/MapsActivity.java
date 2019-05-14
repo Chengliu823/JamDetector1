@@ -69,6 +69,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
 
+        findViewById(R.id.btn_logout).setOnClickListener(new View.OnClickListener() {
+            @Override
+            //Logout
+            public void onClick(View v) {
+                Intent intent = new Intent(MapsActivity.this,LoginActivity.class);
+                startActivity(intent);
+            }
+        });
+
         //für GPS tracking, aktiviert GPS
         locationManager = (LocationManager) this.getSystemService(LOCATION_SERVICE);
 
