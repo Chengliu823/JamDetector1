@@ -205,6 +205,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     // update the location view and database data
+    //Für GPS
     private void updateUI(Location location){
         user_location.setText("Longitude:"+location.getLongitude()+", latitude:"+location.getLatitude());
         float  speed=location.getSpeed();//取得速度
