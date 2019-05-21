@@ -118,7 +118,7 @@ public class LoginActivity extends AppCompatActivity {
         btnSetting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //进入注册界面
+                //进入设置界面
                 Intent intent = new Intent(LoginActivity.this, SettingActivity.class);
                 startActivity(intent);
             }
