@@ -11,6 +11,8 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+import com.example.semesterprojekt.SQLiteHelper;
+
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -31,6 +33,8 @@ public class RegisterActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 register();
+                Intent intent = new Intent(RegisterActivity.this,LoginActivity.class);
+                startActivity(intent);
             }
         });
 
@@ -54,7 +58,7 @@ public class RegisterActivity extends AppCompatActivity {
         }
         // 禁用登录按钮,避免重复点击
         mBtnRegister.setEnabled(false); //wenn man zu oft drückt
-
+        new SQLiteHelper(RegisterActivity.this).initial_data(account,password);
         System.out.println("erfolg");
 
     }

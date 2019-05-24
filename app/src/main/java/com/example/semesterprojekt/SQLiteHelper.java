@@ -7,6 +7,10 @@ import android.database.sqlite.SQLiteDatabase;
 
 import com.google.android.gms.maps.model.LatLng;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -35,6 +39,31 @@ public class SQLiteHelper {
         }
     }
 
+    //sendet daten an server
+    public void send(){
+        Cursor cursor = db.rawQuery("SELECT username, lat, lon, time FROM Track", null); //daten werden aus dantenank ausgelesen
+        try {
+            JSONObject tracks = new JSONObject(); //daten werden in json format gebracht
+            JSONArray tlist = new JSONArray();
+            while (cursor.moveToNext()) {
+                JSONObject track = new JSONObject();
+                track.put("username", cursor.getString(0));
+                track.put("lat", cursor.getString(1));
+                track.put("lon", cursor.getString(2));
+                track.put("time", cursor.getString(3));
+                tlist.put(track);
+            }
+            tracks.put("track", tlist);
+            String jsonStr = tracks.toString();
+            System.out.println(jsonStr);
+            //daten an server senden
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } finally {
+            cursor.close();
+        }
+    }
+
     public List<HashMap<String, String>> get_track(String username){
         List<HashMap<String, String>> track = new ArrayList<>();
         Cursor cursor = db.rawQuery("SELECT lat, lon, time FROM Track WHERE username = '"+username+"'", null);
@@ -53,6 +82,9 @@ public class SQLiteHelper {
 
     public void add_track(String username, double lat, double lon, String time){
         db.execSQL("INSERT INTO Track(username, lat, lon, time) VALUES ('"+username+"', "+lat+", "+lon+", '"+time+"')");
+    }
+    public void initial_data(String username, String password){
+        db.execSQL("INSERT INTO User(username,password) VALUES('"+username+"',"+password+")");
     }
 
 }

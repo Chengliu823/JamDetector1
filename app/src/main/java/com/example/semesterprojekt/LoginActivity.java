@@ -140,13 +140,13 @@ public class LoginActivity extends AppCompatActivity {
         // 隐藏软键盘
         hideKeyBoard(this);
 
-        // 验证用户名是否为空
+        // 验证用户名是否为空 //ließt textfeld für username und weißt varibalen zu
         final String account = mEtAccount.getText().toString().trim();
         if (TextUtils.isEmpty(account)) {
             Toast.makeText(this, "username can not be empty", Toast.LENGTH_SHORT).show();
             return;
         }
-        // 验证密码是否为空
+        // 验证密码是否为空 //ließt textfeld für pasowert und weißt varibalen zu
         final String password = mEtPassword.getText().toString().trim();
         if (TextUtils.isEmpty(password)) {
             Toast.makeText(this, "password can not be empty", Toast.LENGTH_SHORT).show();
@@ -163,10 +163,11 @@ public class LoginActivity extends AppCompatActivity {
 
 
         //检查数据库用户信息 //überprüfung ob password oder userame falsch, wenn richtig dann zu mapsActivity
+        //          Konstruktor         Parameter          Mathode (useranme,                   passwort)
         if (new SQLiteHelper(getApplicationContext()).login(mEtAccount.getText().toString(), mEtPassword.getText().toString())){
-            Toast.makeText(this, "success!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "success!", Toast.LENGTH_SHORT).show(); //meldung
             //启动主界面
-            Intent intent = new Intent(LoginActivity.this, MapsActivity.class);
+            Intent intent = new Intent(LoginActivity.this, MapsActivity.class); //mit Intend zu MapsActivity wechseln
             intent.putExtra("username", mEtAccount.getText().toString());
             startActivity(intent);
             finish();

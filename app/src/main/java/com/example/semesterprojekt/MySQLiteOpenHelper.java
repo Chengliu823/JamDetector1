@@ -34,14 +34,15 @@ public class MySQLiteOpenHelper extends SQLiteOpenHelper {
         Toast.makeText(mContext, "Success", Toast.LENGTH_SHORT).show();
     }
 
-    private void initial_data(SQLiteDatabase db){
+    public void initial_data(SQLiteDatabase db){
         db.execSQL("insert into User(username, password) VALUES ('cheng', '123');");
         db.execSQL("insert into User(username, password) VALUES ('sammi', '1');");
     }
 
+
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion){
-        db.execSQL("insert into Track(username,lat,lon,time) VALUES ('cheng','48.2177','16.3380','01.05.2019')");
+
     }
 
 }

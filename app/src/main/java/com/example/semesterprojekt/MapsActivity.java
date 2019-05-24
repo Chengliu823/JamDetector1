@@ -51,12 +51,23 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private SensorManager sensorManager;
     private DecimalFormat decimalFormat;
     private Button btnCalendar;
+    private Button btnSend;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+
+        btnSend = findViewById(R.id.bt_send);
+
+        btnSend.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                SQLiteHelper s = new SQLiteHelper(getApplicationContext());
+                s.send();
+            }
+        });
 
         btnCalendar = findViewById(R.id.btn_calendar);
 
@@ -81,7 +92,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         //für GPS tracking, aktiviert GPS
         locationManager = (LocationManager) this.getSystemService(LOCATION_SERVICE);
 
-        /*
+
         // 通过GPS获取定位的位置数据
         Criteria criteria = new Criteria();
         criteria.setAccuracy(Criteria.ACCURACY_FINE);// 高精度 //für Präzision (hoche genauigkeit)
@@ -90,7 +101,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         criteria.setCostAllowed(true);// 设置允许产生资费 //maut/kosten
         criteria.setSpeedRequired(true);//设置是否需要速度 //geschwindigkeit erkennung
         criteria.setPowerRequirement(Criteria.POWER_HIGH);// 低功耗 //energie verbrauch
-        */
+
 
         Intent intent = getIntent(); //überspringe zu anderem Fenster
         //获取用户信息
@@ -119,6 +130,26 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+        Sensor accSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        if (accSensor!=null){
+            sensorManager.registerListener(new SensorEventListener() {
+                @Override
+                public void onSensorChanged(SensorEvent sensorEvent) {
+                    if (sensorEvent.sensor.getType() == Sensor.TYPE_ACCELEROMETER){
+                        double x = sensorEvent.values[0];
+                        double y = sensorEvent.values[1];
+                        double z = sensorEvent.values[2];
+                        user_acc.setText(decimalFormat.format(Math.sqrt(x*x+y*y+z*z)));
+                    }
+                }
+
+                @Override
+                public void onAccuracyChanged(Sensor sensor, int i) {
+
+                }
+            }, accSensor, SensorManager.SENSOR_DELAY_NORMAL);
+        }
 
 
 
@@ -154,6 +185,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         //Geographische Länge, Breitegrad
         Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+
+        if(location==null){
+            return;
+        }
+
         last_point = new LatLng(location.getLatitude(), location.getLongitude());
         mMap.addMarker(new MarkerOptions().position(last_point));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(last_point));
@@ -162,6 +198,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000, 10, new LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
+                mMap.moveCamera(CameraUpdateFactory.newLatLng(last_point));
                 user_location.setText("Longitude:"+location.getLongitude()+", latitude:"+location.getLatitude());
                 mMap.addPolyline(new PolylineOptions().clickable(false).color(Color.RED).add(last_point, new LatLng(location.getLatitude(), location.getLongitude())));
                 last_point = new LatLng(location.getLatitude(), location.getLongitude());
