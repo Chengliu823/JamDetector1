@@ -13,6 +13,9 @@ import android.widget.EditText;
 import android.widget.Toast;
 import com.example.semesterprojekt.SQLiteHelper;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -58,9 +61,34 @@ public class RegisterActivity extends AppCompatActivity {
         }
         // 禁用登录按钮,避免重复点击
         mBtnRegister.setEnabled(false); //wenn man zu oft drückt
-        new SQLiteHelper(RegisterActivity.this).initial_data(account,password);
+
+        //new SQLiteHelper(RegisterActivity.this).initial_data(account,password);
+
+
+
         System.out.println("erfolg");
 
+    }
+
+    private void resgisterService(String account, String password) {
+        try {
+            //daten werden in json format gebracht
+            JSONObject user = new JSONObject();
+            user.put("username", account);
+            user.put("password", password);
+
+            String jsonStr = user.toString();
+            System.out.println(jsonStr);
+
+            callServie("ieslamp.technikum-wien.at/bvu19sys5/register.php", user);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void callServie(String s, JSONObject user) {
+        //daten an server senden
     }
 
     public static void hideKeyBoard(Context context) {
