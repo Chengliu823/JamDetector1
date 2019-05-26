@@ -45,6 +45,8 @@ public class LoginActivity extends AppCompatActivity {
     private ProgressDialog progressDialog;
     private ImageButton btnSetting;
 
+    private static SyncHttpClient client = new SyncHttpClient();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -179,9 +181,11 @@ public class LoginActivity extends AppCompatActivity {
         //检查数据库用户信息 //überprüfung ob password oder userame falsch, wenn richtig dann zu mapsActivity
         //          Konstruktor         Parameter          Mathode (useranme,                   passwort)
         //boolean loginok = new SQLiteHelper(getApplicationContext()).login(mEtAccount.getText().toString(), mEtPassword.getText().toString());
-        JsonHttpResponseHandler handler = new JsonHttpResponseHandler() {
 
-            @Override
+
+        JsonHttpResponseHandler handler = new JsonHttpResponseHandler() { //neue instanz der kalsse ertsellt, behandelt ergebnis
+
+            @Override //methode überschrien
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                 Toast.makeText(LoginActivity.this, "Could not call login service", Toast.LENGTH_SHORT).show();
                 mBtnLogin.setEnabled(true);
@@ -189,10 +193,10 @@ public class LoginActivity extends AppCompatActivity {
                 throwable.printStackTrace();
             }
 
-            @Override
+            @Override //wenn der server retrun wert zurück schickt wird diese methode aufgerufen
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 try {
-                    boolean loginok = response.getBoolean("result");
+                    boolean loginok = response.getBoolean("result"); //wenn {result:true} dann true sonst false
                     if (loginok){
                         Toast.makeText(LoginActivity.this, "success!", Toast.LENGTH_SHORT).show(); //meldung
                         //启动主界面
@@ -217,7 +221,7 @@ public class LoginActivity extends AppCompatActivity {
 
         loginService(account, password, handler);
     }
-
+    //json wird erstellt und an server geschickt
     private void loginService(String account, String password, JsonHttpResponseHandler handler) {
         try {
             //daten werden in json format gebracht
@@ -228,13 +232,12 @@ public class LoginActivity extends AppCompatActivity {
             RequestParams rp = new RequestParams();
             rp.add("json", user.toString());
 
-            client.post("https://ieslamp.technikum-wien.at/bvu19sys5/jamlocal/checklogin.php", rp, handler);
+            client.post("https://ieslamp.technikum-wien.at/bvu19sys5/jamlocal/checklogin.php", rp, handler); //json wird geschickt,
+            // return wert wird von handler verarbeitet
         } catch (JSONException e) {
             e.printStackTrace();
         }
     }
-
-    private static SyncHttpClient client = new SyncHttpClient();
 
     /**
      * 隐藏系统键盘

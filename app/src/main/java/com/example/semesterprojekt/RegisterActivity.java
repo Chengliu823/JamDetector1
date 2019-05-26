@@ -12,15 +12,22 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 import com.example.semesterprojekt.SQLiteHelper;
+import com.loopj.android.http.JsonHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
+import com.loopj.android.http.SyncHttpClient;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import cz.msebera.android.httpclient.Header;
 
 
 public class RegisterActivity extends AppCompatActivity {
 
     private EditText mEtAccount, mEtPassword, mEtPassword2;
     private Button mBtnRegister;
+
+    private static SyncHttpClient client = new SyncHttpClient();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,31 +72,61 @@ public class RegisterActivity extends AppCompatActivity {
         //new SQLiteHelper(RegisterActivity.this).initial_data(account,password);
 
 
+        JsonHttpResponseHandler handler = new JsonHttpResponseHandler() { //neue instanz der kalsse ertsellt, behandelt ergebnis
 
-        System.out.println("erfolg");
+            @Override //methode überschrien
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                Toast.makeText(RegisterActivity.this, "Could not call login service", Toast.LENGTH_SHORT).show();
+                mBtnRegister.setEnabled(true);
+                throwable.printStackTrace();
+            }
+
+            @Override //wenn der server retrun wert zurück schickt wird diese methode aufgerufen
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                try {
+                    boolean registerok = response.getBoolean("result"); //wenn {result:true} dann true sonst false
+                    if (registerok){
+                        Toast.makeText(RegisterActivity.this, "success!", Toast.LENGTH_SHORT).show(); //meldung
+                        //启动主界面
+                        Intent intent = new Intent(RegisterActivity.this, LoginActivity.class); //mit Intend zu MapsActivity wechseln
+                        startActivity(intent);
+                        finish();
+                    }else{
+                        Toast.makeText(RegisterActivity.this, "registration failed", Toast.LENGTH_SHORT).show();
+                        mBtnRegister.setEnabled(true);
+                    }
+                } catch (JSONException e) {
+                    mBtnRegister.setEnabled(true);
+                    e.printStackTrace();
+                }
+            }
+
+        };
+
+
+        registerService(account, password, handler);
 
     }
 
-    private void resgisterService(String account, String password) {
+    private void registerService(String account, String password, JsonHttpResponseHandler handler) {
         try {
             //daten werden in json format gebracht
             JSONObject user = new JSONObject();
             user.put("username", account);
             user.put("password", password);
 
-            String jsonStr = user.toString();
-            System.out.println(jsonStr);
+            RequestParams rp = new RequestParams();
+            rp.add("json", user.toString());
 
-            callServie("ieslamp.technikum-wien.at/bvu19sys5/register.php", user);
+
+            client.post("https://ieslamp.technikum-wien.at/bvu19sys5/jamlocal/register.php", rp, handler); //json wird geschickt,
+            // return wert wird von handler verarbeitet
 
         } catch (JSONException e) {
             e.printStackTrace();
         }
     }
 
-    private void callServie(String s, JSONObject user) {
-        //daten an server senden
-    }
 
     public static void hideKeyBoard(Context context) {
         InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
