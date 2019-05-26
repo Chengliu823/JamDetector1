@@ -14,7 +14,7 @@
 		$lon = $name->{'lon'};
 		$dt =  $name->{'time'};
 		$sql_str = "INSERT INTO track(username, lat, lon, time) VALUES ('".$u."',".$lat.",".$lon.",'".$dt."')";
-		mysqli_query($conn, sql_str);
+		mysqli_query($conn, $sql_str);
 	}
 	
 	mysqli_commit($conn);
