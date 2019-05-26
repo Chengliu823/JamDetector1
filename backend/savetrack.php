@@ -1,34 +1,25 @@
 <?php
 	include("config.php");
-?>
-
-<html>
-<head>
-<title>track save</title>
-</head>
-<body>
-
-<h1>track save</h1>
-
- <?php
-	$t = $_POST["track"];
-	$ta = json_decode($t);
-	$taa = $ta->{'track'};
 	
-	foreach($taa AS $name) {
+	mysqli_autocommit($conn, TRUE);
+
+	$t = $_POST["track"]; //string
+	$ta = json_decode($t); //zu json umgewandet
+	$taa = $ta->{'track'}; //liste wird ausgelesen
+	
+	//die einzelnen objekte der liste werden ausgelsen und in die datenbank vom server geschriben
+	foreach($taa AS $name) { //in name wird das ganze objekt gespeichert
 		$u = $name->{'username'};
 		$lat = $name->{'lat'};
 		$lon = $name->{'lon'};
 		$dt =  $name->{'time'};
-		//echo "$time";
-		
-		$stmt = $conn->prepare('INSERT INTO track(username, lat, lon, time) VALUES (?,?,?,?)');
-		$stmt->bind_param('sdds',$u, $lat, $lon, $dt);
-		$stmt->execute();
+		$sql_str = "INSERT INTO track(username, lat, lon, time) VALUES ('".$u."',".$lat.",".$lon.",'".$dt."')";
+		mysqli_query($conn, sql_str);
 	}
-
+	
+	mysqli_commit($conn);
+	mysqli_close($conn);
+	
+	
+	echo '{"result":"true"}';
 ?>
-<a href="index.php"> home </a>
-
-</body>
-</html>

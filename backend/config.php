@@ -2,7 +2,7 @@
 	$hostname = "localhost";
 	$username = "admin2";
 	$password = "123";
-	$dbname = "jamdetector";
+	$dbname = "bvu19sys5";
 
 	// Create connection
 	$conn = mysqli_connect ( $hostname, $username, $password, $dbname );
