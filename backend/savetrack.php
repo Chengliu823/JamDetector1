@@ -3,7 +3,7 @@
 	
 	mysqli_autocommit($conn, TRUE);
 
-	$t = $_POST["track"]; //string
+	$t = $_POST["json"]; //string
 	$ta = json_decode($t); //zu json umgewandet
 	$taa = $ta->{'track'}; //liste wird ausgelesen
 	

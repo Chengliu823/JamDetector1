@@ -1,7 +1,7 @@
 <?php
 	include("config.php");
 	
-	$u = $_POST["user"]; //string
+	$u = $_POST["json"]; //string
 	$ua = json_decode($u); //zu json umgewandet
 	$user = $ua->{'username'};
 	$password = $ua->{'password'};
