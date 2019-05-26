@@ -1,0 +1,7 @@
+object(stdClass)#7 (1) { ["track"]=> array(6) { 
+[0]=> object(stdClass)#1 (4) { ["username"]=> string(4) "noah" ["lat"]=> string(5) "40.99" ["lon"]=> string(5) "30.88" ["time"]=> string(10) "01.05.2019" } 
+[1]=> object(stdClass)#2 (4) { ["username"]=> string(3) "ola" ["lat"]=> string(6) "40.001" ["lon"]=> string(5) "30.44" ["time"]=> string(10) "01.05.2019" } 
+[2]=> object(stdClass)#3 (4) { ["username"]=> string(4) "asdf" ["lat"]=> string(6) "40.003" ["lon"]=> string(5) "30.33" ["time"]=> string(10) "01.05.2019" } 
+[3]=> object(stdClass)#4 (4) { ["username"]=> string(5) "kenny" ["lat"]=> string(5) "40.02" ["lon"]=> string(5) "30.22" ["time"]=> string(10) "01.05.2019" } 
+[4]=> object(stdClass)#5 (4) { ["username"]=> string(5) "felix" ["lat"]=> string(5) "40.23" ["lon"]=> string(5) "30.11" ["time"]=> string(10) "01.05.2019" } 
+[5]=> object(stdClass)#6 (4) { ["username"]=> string(5) "wolfi" ["lat"]=> string(5) "40.12" ["lon"]=> string(5) "30.10" ["time"]=> string(10) "01.05.2019" } } } bool(true) 
