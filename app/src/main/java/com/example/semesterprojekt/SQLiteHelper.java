@@ -6,6 +6,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.loopj.android.http.RequestParams;
+import com.loopj.android.http.SyncHttpClient;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -22,12 +24,15 @@ public class SQLiteHelper {
     private MySQLiteOpenHelper dbHelper;
     private SQLiteDatabase db;
 
+
+
     public SQLiteHelper(Context context){
         // 连接数据库
         dbHelper = new MySQLiteOpenHelper(context, "diary.db", null, 1);
         db = dbHelper.getWritableDatabase();
     }
 
+    //lingin über lokalen server, verwenden wir nicht mehr
     public boolean login(String username, String password){
         Cursor cursor = db.rawQuery("SELECT password FROM User WHERE username = '"+username+"'", null);
         if (cursor.moveToFirst() && password.equals(cursor.getString(0))){
@@ -40,7 +45,7 @@ public class SQLiteHelper {
     }
 
     //sendet daten an server
-    public void send(){
+    public JSONObject send(){
         Cursor cursor = db.rawQuery("SELECT username, lat, lon, time FROM Track", null); //daten werden aus dantenank ausgelesen
         try {
             JSONObject tracks = new JSONObject(); //daten werden in json format gebracht
@@ -54,14 +59,15 @@ public class SQLiteHelper {
                 tlist.put(track);
             }
             tracks.put("track", tlist);
-            String jsonStr = tracks.toString();
-            System.out.println(jsonStr);
-            //daten an server senden
+
+            return tracks;
+
         } catch (JSONException e) {
             e.printStackTrace();
         } finally {
             cursor.close();
         }
+        return null; //auchtung null pointer exception
     }
 
     public List<HashMap<String, String>> get_track(String username){

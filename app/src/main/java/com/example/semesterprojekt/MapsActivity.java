@@ -2,6 +2,7 @@ package com.example.semesterprojekt;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -19,10 +20,12 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.text.Html;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.semesterprojekt.SQLiteHelper;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -35,11 +38,19 @@ import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.loopj.android.http.JsonHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
+import com.loopj.android.http.SyncHttpClient;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.text.DecimalFormat;
 import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import cz.msebera.android.httpclient.Header;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -53,6 +64,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private Button btnCalendar;
     private Button btnSend;
 
+    private static SyncHttpClient client = new SyncHttpClient();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,8 +76,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         btnSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                SQLiteHelper s = new SQLiteHelper(getApplicationContext());
-                s.send();
+                savetrack();
             }
         });
 
@@ -232,4 +243,44 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         });
     }
 
+    private void savetrack() {
+
+        JsonHttpResponseHandler handler = new JsonHttpResponseHandler() { //neue instanz der kalsse ertsellt, behandelt ergebnis
+
+            @Override //methode überschrien
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                Toast.makeText(MapsActivity.this, "Could not call login service", Toast.LENGTH_SHORT).show();
+                btnSend.setEnabled(true);
+                throwable.printStackTrace();
+            }
+
+            @Override //wenn der server retrun wert zurück schickt wird diese methode aufgerufen
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                try {
+                    boolean registerok = response.getBoolean("result"); //wenn {result:true} dann true sonst false
+                    if (registerok) {
+                        Toast.makeText(MapsActivity.this, "success!", Toast.LENGTH_SHORT).show(); //meldung
+                        btnSend.setEnabled(true);
+                    } else {
+                        Toast.makeText(MapsActivity.this, "sending failed", Toast.LENGTH_SHORT).show();
+                        btnSend.setEnabled(true);
+                    }
+                } catch (JSONException e) {
+                    btnSend.setEnabled(true);
+                    e.printStackTrace();
+                }
+            }
+
+        };
+
+        SQLiteHelper s = new SQLiteHelper(getApplicationContext());
+        JSONObject tracks = s.send();
+
+        RequestParams rp = new RequestParams();
+        rp.add("json", tracks.toString());
+
+
+        client.post("https://ieslamp.technikum-wien.at/bvu19sys5/jamlocal/savetrack.php", rp, handler); //json wird geschickt,
+        // return wert wird von handler verarbeitet
+    }
 }
