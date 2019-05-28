@@ -3,6 +3,7 @@ package com.example.semesterprojekt;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -18,6 +19,12 @@ import com.loopj.android.http.SyncHttpClient;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.ksoap2.SoapEnvelope;
+import org.ksoap2.serialization.PropertyInfo;
+import org.ksoap2.serialization.SoapObject;
+import org.ksoap2.serialization.SoapPrimitive;
+import org.ksoap2.serialization.SoapSerializationEnvelope;
+import org.ksoap2.transport.HttpTransportSE;
 
 import cz.msebera.android.httpclient.Header;
 
@@ -27,7 +34,7 @@ public class RegisterActivity extends AppCompatActivity {
     private EditText mEtAccount, mEtPassword, mEtPassword2;
     private Button mBtnRegister;
 
-    private static SyncHttpClient client = new SyncHttpClient();
+    private static SyncHttpClient client = new SyncHttpClient(); //library in build.gradle manuel hinzugefügt
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,7 +78,53 @@ public class RegisterActivity extends AppCompatActivity {
 
         //new SQLiteHelper(RegisterActivity.this).initial_data(account,password);
 
+        // SOAP
 
+        String URL = "https://ieslamp.technikum-wien.at/bvu19sys5/jamlocal/registers.php?wsdl";
+        String NAMESPACE = "https://ieslamp.technikum-wien.at/bvu19sys5/jamlocal/registers.php";
+        String SOAP_ACTION = "https://ieslamp.technikum-wien.at/bvu19sys5/jamlocal/registers.php/register1";
+        String METHOD_NAME = "register1";
+
+        String result = "";
+
+        SoapObject soapObject = new SoapObject(NAMESPACE, METHOD_NAME);
+
+        PropertyInfo propertyInfo = new PropertyInfo();
+        propertyInfo.setName("username");
+        propertyInfo.setValue(account);
+        propertyInfo.setType(String.class);
+
+        PropertyInfo propertyInfo1 = new PropertyInfo();
+        propertyInfo1.setName("password");
+        propertyInfo1.setValue(password);
+        propertyInfo1.setType(String.class);
+
+        soapObject.addProperty(propertyInfo);
+        soapObject.addProperty(propertyInfo1);
+
+        SoapSerializationEnvelope envelope =  new SoapSerializationEnvelope(SoapEnvelope.VER11);
+        envelope.setOutputSoapObject(soapObject);
+
+        HttpTransportSE httpTransportSE = new HttpTransportSE(URL);
+
+        try {
+            httpTransportSE.call(SOAP_ACTION, envelope);
+            SoapPrimitive soapPrimitive = (SoapPrimitive)envelope.getResponse();
+            result = soapPrimitive.toString();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        Toast.makeText(RegisterActivity.this, "success!", Toast.LENGTH_SHORT).show(); //meldung
+        //启动主界面
+        Intent intent = new Intent(RegisterActivity.this, LoginActivity.class); //mit Intend zu MapsActivity wechseln
+        startActivity(intent);
+        finish();
+
+
+        // SOAP ENDE
+
+        /*
         JsonHttpResponseHandler handler = new JsonHttpResponseHandler() { //neue instanz der kalsse ertsellt, behandelt ergebnis
 
             @Override //methode überschrien
@@ -102,9 +155,9 @@ public class RegisterActivity extends AppCompatActivity {
             }
 
         };
+        */
 
-
-        registerService(account, password, handler);
+        //registerService(account, password, handler);
 
     }
 
@@ -133,7 +186,6 @@ public class RegisterActivity extends AppCompatActivity {
         if (imm.isActive())
             imm.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, InputMethodManager.HIDE_NOT_ALWAYS);
     }
-
 
 
 }

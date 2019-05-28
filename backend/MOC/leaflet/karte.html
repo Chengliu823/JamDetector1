@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Leaflet Quick Start Guide Example</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="leaflet.css" />
+</head>
+
+<body>
+    <div id="map" style="width: 100%; height: 800px"></div>
+    <script src="leaflet.js"></script>
+	<script src="https://d3js.org/d3.v3.min.js"></script>
+    <script src="https://d3js.org/topojson.v0.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+    <script>
+	
+	navigator.geolocation.getCurrentPosition(function(location) {
+		var latlng = new L.LatLng(location.coords.latitude, location.coords.longitude);
+		
+		var map = L.map('map').setView(latlng, 20);
+		var BasemapAT_highdpi = L.tileLayer('http://maps{s}.wien.gv.at/basemap/bmaphidpi/normal/google3857/{z}/{y}/{x}.{format}', {
+			maxZoom: 19,
+			attribution: 'Datenquelle: <a href="www.basemap.at">basemap.at</a>',
+			subdomains: ["", "1", "2", "3", "4"],
+			format: 'jpeg'
+			//bounds: [[46.35877, 8.782379], [49.037872, 17.189532]]
+		});
+		
+		BasemapAT_highdpi.addTo(map);
+		
+		var marker = L. marker (latlng).addTo (map );
+		marker.bindPopup("<b> Aktuelle Position </b>").openPopup();
+		//circle.bindPopup("Ich bin ein Kreis");
+		//polygon.bindPopup("Ich bin ein Polygon");
+		
+		$.ajax({
+			url:'http://localhost/Uebung5_JCPF/list2.php',
+			type: "get",
+			success:function(geoJson) {
+				L.geoJSON(geoJson).addTo(map);
+			},
+			dataType:"json"
+		})
+	});
+
+
+    </script>
+</body>
+
+</html>
