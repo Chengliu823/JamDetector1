@@ -9,6 +9,7 @@ import android.widget.Toast;
 //datenbank, daten werden hier gespeichert
 public class MySQLiteOpenHelper extends SQLiteOpenHelper {
 
+    //wirnd nicht mehr verwendet
     private static final String CREATE_USER = "create table User(" +
             "username varchar(20), "+
             "password varchar(20))";
@@ -17,7 +18,9 @@ public class MySQLiteOpenHelper extends SQLiteOpenHelper {
             "username varchar(20)," +
             "lat text, " +
             "lon text, " +
-            "time text)";
+            "time text," +
+            "speed text," +
+            "send boolean)";
 
     private Context mContext;
 
@@ -34,6 +37,7 @@ public class MySQLiteOpenHelper extends SQLiteOpenHelper {
         Toast.makeText(mContext, "Success", Toast.LENGTH_SHORT).show();
     }
 
+    //wirnd nicht mehr verwendet
     public void initial_data(SQLiteDatabase db){
         db.execSQL("insert into User(username, password) VALUES ('cheng', '123');");
         db.execSQL("insert into User(username, password) VALUES ('sammi', '1');");

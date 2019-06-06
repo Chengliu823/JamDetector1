@@ -55,7 +55,7 @@ public class LoginActivity extends AppCompatActivity {
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
-        setContentView(R.layout.activity_login);
+        setContentView(R.layout.activity_login); //immer in activity automatisch
 
         //绑定控件 //input wird übernommen
         mEtAccount = findViewById(R.id.et_user_account);
@@ -67,14 +67,14 @@ public class LoginActivity extends AppCompatActivity {
         mTvGoToRegister = findViewById(R.id.tv_go_to_register);
         btnSetting = findViewById(R.id.btn_setting);
 
-        //文字发生改变时的监听事件
+        //文字发生改变时的监听事件 wenn etwas in usernme textfeld eingegeben wird
         mEtAccount.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
             }
 
-            @Override
+            @Override //x im textfeld
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 int visible = TextUtils.isEmpty(charSequence.toString()) ? View.GONE : View.VISIBLE;
                 mIvDeleteAccount.setVisibility(visible);
@@ -112,8 +112,7 @@ public class LoginActivity extends AppCompatActivity {
         });
         mIvDeletePassword.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                mEtPassword.setText("");
+            public void onClick(View view) { mEtPassword.setText("");
             }
         });
         mBtnLogin.setOnClickListener(new View.OnClickListener() { //button für login
@@ -169,7 +168,7 @@ public class LoginActivity extends AppCompatActivity {
             Toast.makeText(this, "password can not be empty", Toast.LENGTH_SHORT).show();
             return;
         }
-        // 禁用登录按钮,避免重复点击
+        // 禁用登录按钮,避免重复点击 TODO eigentlich unnötig
         mBtnLogin.setEnabled(false); //wenn man zu oft drückt
         // 显示提示对话框 //kleine message
         progressDialog = new ProgressDialog(this);
@@ -252,7 +251,7 @@ public class LoginActivity extends AppCompatActivity {
             imm.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, InputMethodManager.HIDE_NOT_ALWAYS);
     }
 
-    //检查APP是否具有拨号、存储权限 //überfrüfen
+    //检查APP是否具有拨号、存储权限 //TODO überfrüfen ob location berechtigung
     private void checkPermission(){
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
             if(LoginActivity.this.checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -263,7 +262,7 @@ public class LoginActivity extends AppCompatActivity {
         //check_cookies();
     }
 
-    // 提示用户该请求权限的弹出框 //für GPS
+    // 提示用户该请求权限的弹出框 //wird in CHeck permission aufgerufen
     private void showDialogTipUserRequestPermission() {
         new AlertDialog.Builder(this)
                 .setTitle("Permission is not Granted")

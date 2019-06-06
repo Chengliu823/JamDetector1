@@ -42,6 +42,7 @@ import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.SyncHttpClient;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -71,7 +72,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
 
-        btnSend = findViewById(R.id.bt_send);
+        btnSend = findViewById(R.id.bt_send); //verbindung zum layout
 
         btnSend.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -100,11 +101,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
 
-        //für GPS tracking, aktiviert GPS
+        //braucht man für zugriff auf location daten
         locationManager = (LocationManager) this.getSystemService(LOCATION_SERVICE);
 
 
-        // 通过GPS获取定位的位置数据
+        // 通过GPS获取定位的位置数据 ich glaube es ist unnütig weil die variable nigens verwendet wird
         Criteria criteria = new Criteria();
         criteria.setAccuracy(Criteria.ACCURACY_FINE);// 高精度 //für Präzision (hoche genauigkeit)
         criteria.setAltitudeRequired(false);// 设置不需要获取海拔方向数据 //höhe
@@ -113,10 +114,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         criteria.setSpeedRequired(true);//设置是否需要速度 //geschwindigkeit erkennung
         criteria.setPowerRequirement(Criteria.POWER_HIGH);// 低功耗 //energie verbrauch
 
-
         Intent intent = getIntent(); //überspringe zu anderem Fenster
         //获取用户信息
-        username = intent.getStringExtra("username"); //username
+        username = intent.getStringExtra("username"); //username mit dem man sich einloggt, arbeitet mit der PutExtra Methode in login zusammmen
 
         user_status = findViewById(R.id.user_status); //status von user
         user_location = findViewById(R.id.user_location); //position der users
@@ -137,11 +137,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         });
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        //获取SupportMapFragment并在准备好使用地图的时候获取通知
+        //获取SupportMapFragment并在准备好使用地图的时候获取通知 //UI Element für Karteanzeigen in bereich
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
+        //beschleunigungssensor
         Sensor accSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         if (accSensor!=null){
             sensorManager.registerListener(new SensorEventListener() {
@@ -184,6 +185,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.moveCamera(CameraUpdateFactory.zoomTo(18f));
         // Turn on the My Location layer and the related control on the map.
         updateLocationUI();
+        drawtrafficdata();
     }
 
     @SuppressLint("MissingPermission")
@@ -194,7 +196,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             return;
         }
 
-        //Geographische Länge, Breitegrad
+        //aktuelle position wird variblen zugewiesen
         Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 
         if(location==null){
@@ -213,16 +215,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 user_location.setText("Longitude:"+location.getLongitude()+", latitude:"+location.getLatitude());
                 mMap.addPolyline(new PolylineOptions().clickable(false).color(Color.RED).add(last_point, new LatLng(location.getLatitude(), location.getLongitude())));
                 last_point = new LatLng(location.getLatitude(), location.getLongitude());
-                float  speed=location.getSpeed();//取得速度
+                float speed =location.getSpeed() * 3.6f ;//取得速度
                 decimalFormat=new DecimalFormat("0.00");//构造方法的字符格式这里如果小数不足2位,会以0补足.
-                speed = speed*3.6f;
                 if (speed == 0){
                     user_status.setText("REST");
                 }else{
                     SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                     Date date = new Date();
-                    user_status.setText((speed/3.6)+"m/s");
-                    new SQLiteHelper(MapsActivity.this).add_track(username, location.getLatitude(),location.getLongitude(),format.format(date));
+                    user_status.setText((speed)+"km/m");
+                    new SQLiteHelper(MapsActivity.this).add_track(username, location.getLatitude(),location.getLongitude(),format.format(date), speed);
                 }
             }
 
@@ -243,6 +244,47 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         });
     }
 
+    private void drawtrafficdata(){
+
+        JsonHttpResponseHandler handler = new JsonHttpResponseHandler() { //neue instanz der kalsse ertsellt, behandelt ergebnis
+
+            @Override //methode überschrien
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                throwable.printStackTrace();
+            }
+
+            @Override //wenn der server retrun wert zurück schickt wird diese methode aufgerufen
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                try {
+                    System.out.println(response);
+
+                    JSONArray c = response.getJSONArray("trafficdata");
+                    for (int i = 0 ; i < c.length(); i++) {
+                        JSONArray array = c.getJSONArray(i);
+                        for (int k = 0 ; k < array.length(); k++) {
+                            JSONObject obj = array.getJSONObject(k);
+                            double lat = obj.getDouble("lat");
+                            double lon = obj.getDouble("lon");
+                            double speed = obj.getDouble("speed");
+
+
+                            LatLng point1 = new LatLng(lat, lon);
+                            LatLng point2 = new LatLng(lat, lon);
+
+                            mMap.addPolyline(new PolylineOptions().clickable(false).color(Color.BLUE).add(point1, point2));
+                        }
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+
+        RequestParams rp = new RequestParams();
+
+        client.post("https://ieslamp.technikum-wien.at/bvu19sys5/jamlocal/trafficdata.php", rp, handler); //json wird geschickt,
+    }
+
     private void savetrack() {
 
         JsonHttpResponseHandler handler = new JsonHttpResponseHandler() { //neue instanz der kalsse ertsellt, behandelt ergebnis
@@ -255,11 +297,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
 
             @Override //wenn der server retrun wert zurück schickt wird diese methode aufgerufen
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) { //response vom service
                 try {
                     boolean registerok = response.getBoolean("result"); //wenn {result:true} dann true sonst false
                     if (registerok) {
                         Toast.makeText(MapsActivity.this, "success!", Toast.LENGTH_SHORT).show(); //meldung
+                        new SQLiteHelper(MapsActivity.this).add_send_true();
                         btnSend.setEnabled(true);
                     } else {
                         Toast.makeText(MapsActivity.this, "sending failed", Toast.LENGTH_SHORT).show();
@@ -270,7 +313,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     e.printStackTrace();
                 }
             }
-
         };
 
         SQLiteHelper s = new SQLiteHelper(getApplicationContext());
@@ -278,7 +320,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         RequestParams rp = new RequestParams();
         rp.add("json", tracks.toString());
-
 
         client.post("https://ieslamp.technikum-wien.at/bvu19sys5/jamlocal/savetrack.php", rp, handler); //json wird geschickt,
         // return wert wird von handler verarbeitet
