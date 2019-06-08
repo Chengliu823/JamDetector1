@@ -271,15 +271,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             @Override //wenn der server retrun wert zurück schickt wird diese methode aufgerufen
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 try {
-                    System.out.println(response);
-
-                    LatLng point1;
-                    LatLng point2;
-
                     JSONArray c = response.getJSONArray("trafficdata");
                     for (int i = 0 ; i < c.length(); i++) {
                         JSONArray array = c.getJSONArray(i);
-                        for (int k = 0 ; k < array.length(); k++) {
+                        for (int k = 0 ; k < array.length() - 1; k++) {
                             JSONObject obj1 = array.getJSONObject(k);
                             double lat1 = obj1.getDouble("lat");
                             double lon1 = obj1.getDouble("lon");
@@ -290,8 +285,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             double lon2 = obj2.getDouble("lon");
                             double speed2 = obj2.getDouble("speed");
 
-                            point1 = new LatLng(lat1, lon1);
-                            point2 = new LatLng(lat2, lon2);
+                            LatLng point1 = new LatLng(lat1, lon1);
+                            LatLng point2 = new LatLng(lat2, lon2);
                             if(speed2 <= 50) {
                                 mMap.addPolyline(new PolylineOptions().clickable(false).color(Color.RED).add(point1, point2));
                             }else{
