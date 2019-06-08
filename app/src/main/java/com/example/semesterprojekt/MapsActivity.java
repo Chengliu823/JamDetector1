@@ -64,6 +64,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private DecimalFormat decimalFormat;
     private Button btnCalendar;
     private Button btnSend;
+    private Button btnTraffic;
 
     private static SyncHttpClient client = new SyncHttpClient();
 
@@ -71,6 +72,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+
+        btnTraffic = findViewById(R.id.btn_traffic); //verbindung zum layout
+
+        btnTraffic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                drawtrafficdata();
+            }
+        });
 
         btnSend = findViewById(R.id.bt_send); //verbindung zum layout
 
@@ -97,6 +107,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             //Logout
             public void onClick(View v) {
                 Intent intent = new Intent(MapsActivity.this,LoginActivity.class);
+                intent.removeExtra("username");
+                username = null;
+                finish();
                 startActivity(intent);
             }
         });
@@ -223,7 +236,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                     Date date = new Date();
                     user_status.setText((speed)+"km/m");
-                    new SQLiteHelper(MapsActivity.this).add_track(username, location.getLatitude(),location.getLongitude(),format.format(date), speed);
+                    if (username != null) {
+                        new SQLiteHelper(MapsActivity.this).add_track(username, location.getLatitude(),location.getLongitude(),format.format(date), speed);
+                    }
                 }
             }
 
@@ -258,20 +273,30 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 try {
                     System.out.println(response);
 
+                    LatLng point1;
+                    LatLng point2;
+
                     JSONArray c = response.getJSONArray("trafficdata");
                     for (int i = 0 ; i < c.length(); i++) {
                         JSONArray array = c.getJSONArray(i);
                         for (int k = 0 ; k < array.length(); k++) {
-                            JSONObject obj = array.getJSONObject(k);
-                            double lat = obj.getDouble("lat");
-                            double lon = obj.getDouble("lon");
-                            double speed = obj.getDouble("speed");
+                            JSONObject obj1 = array.getJSONObject(k);
+                            double lat1 = obj1.getDouble("lat");
+                            double lon1 = obj1.getDouble("lon");
+                            double speed1 = obj1.getDouble("speed");
 
+                            JSONObject obj2 = array.getJSONObject(k+1);
+                            double lat2 = obj2.getDouble("lat");
+                            double lon2 = obj2.getDouble("lon");
+                            double speed2 = obj2.getDouble("speed");
 
-                            LatLng point1 = new LatLng(lat, lon);
-                            LatLng point2 = new LatLng(lat, lon);
-
-                            mMap.addPolyline(new PolylineOptions().clickable(false).color(Color.BLUE).add(point1, point2));
+                            point1 = new LatLng(lat1, lon1);
+                            point2 = new LatLng(lat2, lon2);
+                            if(speed2 <= 50) {
+                                mMap.addPolyline(new PolylineOptions().clickable(false).color(Color.RED).add(point1, point2));
+                            }else{
+                                mMap.addPolyline(new PolylineOptions().clickable(false).color(Color.GREEN).add(point1, point2));
+                            }
                         }
                     }
                 } catch (JSONException e) {

@@ -46,7 +46,7 @@ public class SQLiteHelper {
 
     //liest daten aus datenbank und speichert in json
     public JSONObject send(){
-        Cursor cursor = db.rawQuery("SELECT username, lat, lon, time, speed, send FROM Track WHERE send = false", null); //daten werden aus dantenank ausgelesen
+        Cursor cursor = db.rawQuery("SELECT username, lat, lon, time, speed, send FROM Track WHERE send = '+false+'", null); //daten werden aus dantenank ausgelesen
         try {
             JSONObject tracks = new JSONObject(); //daten werden in json format gebracht
             JSONArray tlist = new JSONArray();
@@ -71,7 +71,7 @@ public class SQLiteHelper {
         return null; //auchtung null pointer exception
     }
 
-    //liste mit MashMap Opjekten wird erstellt und zurückgegben
+    //liste mit MashMap Opjekten wird erstellt und zurückgegben, wird in trackdata aufgerufen
     public List<HashMap<String, String>> get_track(String username){
         List<HashMap<String, String>> track = new ArrayList<>();
         Cursor cursor = db.rawQuery("SELECT lat, lon, time FROM Track WHERE username = '"+username+"' AND send = '+false+'", null);
@@ -88,11 +88,11 @@ public class SQLiteHelper {
     }
 
     public void add_track(String username, double lat, double lon, String time, float speed){
-        db.execSQL("INSERT INTO Track(username, lat, lon, time, speed, send) VALUES ('"+username+"', "+lat+", "+lon+", '"+time+"', '"+speed+"', false)");
+        db.execSQL("INSERT INTO Track(username, lat, lon, time, speed, send) VALUES ('"+username+"', "+lat+", "+lon+", '"+time+"', '"+speed+"', '+false+')");
     }
 
     public void add_send_true(){
-        db.execSQL("UPDATE Track SET send = true WHERE send = false");
+        db.execSQL("UPDATE Track SET send = '+true+' WHERE send = '+false+'");
     }
 
     //verwenden wir nicht mehr, war fürs alte register
