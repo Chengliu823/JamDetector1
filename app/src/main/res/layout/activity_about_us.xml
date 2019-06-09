@@ -6,4 +6,13 @@
     android:layout_height="match_parent"
     tools:context=".AboutUSActivity">
 
+    <EditText
+        android:id="@+id/editText"
+        android:layout_width="376dp"
+        android:layout_height="72dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="Wir sind Studierende von Verkehr und Umwelt "
+        tools:layout_editor_absoluteX="16dp"
+        tools:layout_editor_absoluteY="29dp" />
 </android.support.constraint.ConstraintLayout>
