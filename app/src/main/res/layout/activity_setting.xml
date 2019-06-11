@@ -23,11 +23,13 @@
 
             <TextView
                 android:id="@+id/tv_go_to_aboutus"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/about_uns"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="About Us"
+                android:textAlignment="center"
                 android:textColor="@color/secondary_text"
-                android:textSize="16.0sp"
+                android:textSize="24sp"
+                android:textStyle="bold"
                 tools:layout_editor_absoluteX="105dp"
                 tools:layout_editor_absoluteY="438dp" />
 
@@ -42,11 +44,14 @@
 
             <TextView
                 android:id="@+id/tv_go_to_faq"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:text="@string/faq"
+                android:textAlignment="center"
+                android:textAllCaps="true"
                 android:textColor="@color/secondary_text"
-                android:textSize="16.0sp"
+                android:textSize="24sp"
+                android:textStyle="bold"
                 tools:layout_editor_absoluteX="190dp"
                 tools:layout_editor_absoluteY="321dp" />
         </LinearLayout>
@@ -60,11 +65,13 @@
 
             <TextView
                 android:id="@+id/tv_go_to_help"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:text="@string/help"
+                android:textAlignment="center"
                 android:textColor="@color/secondary_text"
-                android:textSize="16.0sp"
+                android:textSize="24sp"
+                android:textStyle="bold"
                 tools:layout_editor_absoluteX="16dp"
                 tools:layout_editor_absoluteY="27dp" />
         </LinearLayout>

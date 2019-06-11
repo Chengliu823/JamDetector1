@@ -6,4 +6,9 @@
     android:layout_height="match_parent"
     tools:context=".HelpActivity">
 
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="402dp"
+        android:layout_height="597dp"
+        android:text="TextView" />
 </android.support.constraint.ConstraintLayout>
