@@ -48,7 +48,9 @@ import org.json.JSONObject;
 
 import java.text.DecimalFormat;
 import java.text.Format;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.Date;
 
 import cz.msebera.android.httpclient.Header;
@@ -78,6 +80,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         btnTraffic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Intent intent = getIntent();
+                intent.putExtra("selectedday", 99);
+
                 drawtrafficdata();
             }
         });
@@ -165,7 +170,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         double x = sensorEvent.values[0];
                         double y = sensorEvent.values[1];
                         double z = sensorEvent.values[2];
-                        user_acc.setText(decimalFormat.format(Math.sqrt(x*x+y*y+z*z)));
+                        user_acc.setText(decimalFormat.format(Math.sqrt(x*x+y*y)));
                     }
                 }
 
@@ -279,18 +284,51 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             double lat1 = obj1.getDouble("lat");
                             double lon1 = obj1.getDouble("lon");
                             double speed1 = obj1.getDouble("speed");
+                            String time1 = obj1.getString("time");
 
                             JSONObject obj2 = array.getJSONObject(k+1);
                             double lat2 = obj2.getDouble("lat");
                             double lon2 = obj2.getDouble("lon");
                             double speed2 = obj2.getDouble("speed");
+                            String time2 = obj1.getString("time");
 
                             LatLng point1 = new LatLng(lat1, lon1);
                             LatLng point2 = new LatLng(lat2, lon2);
-                            if(speed2 <= 50) {
-                                mMap.addPolyline(new PolylineOptions().clickable(false).color(Color.RED).add(point1, point2));
-                            }else{
-                                mMap.addPolyline(new PolylineOptions().clickable(false).color(Color.GREEN).add(point1, point2));
+
+                            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                            try {
+                                Date date = format.parse(time2);
+                                int day = date.getDate();
+                                int month = date.getMonth();
+                                int year = date.getYear();
+
+                                Date currentdate = new Date();
+                                int currentday = currentdate.getDate();
+                                int currentmonth = currentdate.getMonth();
+                                int currentyear = currentdate.getYear();
+
+                                Intent intent = getIntent();
+                                int selectedday = intent.getIntExtra("selectedday", 99);
+                                int selectedmonth = intent.getIntExtra("selectedmonth", 99);
+                                int selectedyear = intent.getIntExtra("selectedyear", 99) - 1900;
+
+                                if(day == currentday && month == currentmonth && year == currentyear && selectedday == 99) {
+                                    if (speed2 <= 10) {
+                                        mMap.addPolyline(new PolylineOptions().clickable(false).color(Color.RED).add(point1, point2));
+                                    } else {
+                                        mMap.addPolyline(new PolylineOptions().clickable(false).color(Color.GREEN).add(point1, point2));
+                                    }
+                                }
+
+                                if(day == selectedday && month == selectedmonth && year == selectedyear) {
+                                    if (speed2 <= 10) {
+                                        mMap.addPolyline(new PolylineOptions().clickable(false).color(Color.RED).add(point1, point2));
+                                    } else {
+                                        mMap.addPolyline(new PolylineOptions().clickable(false).color(Color.GREEN).add(point1, point2));
+                                    }
+                                }
+                            } catch (ParseException e) {
+                                e.printStackTrace();
                             }
                         }
                     }
